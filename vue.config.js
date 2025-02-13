@@ -23,5 +23,7 @@ module.exports = defineConfig({
         }
       ]
     }
-  }
+  },
+  productionSourceMap: true, // 프로덕션 모드에서도 소스 맵을 생성하려면 true로 설정
+  lintOnSave: false  
 });
