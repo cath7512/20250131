@@ -7,6 +7,8 @@
   import { GOOGLE_MAPS_API_KEY } from '../constants/constants';
   import { GOOGLE_MAP_ID } from '../constants/constants';
   import { createWeatherForecastChart, createWeatherHistoryChart } from './WeatherGraph';
+  import { createEconomyChart } from './EconomyGraph';
+
   import '../css/GoogleMaps.css';
   import '../css/myPlanner.css';
   import cities from '../assets/city.json';
@@ -82,6 +84,7 @@
           google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
             createWeatherForecastChart(city);
             createWeatherHistoryChart(city);
+            createEconomyChart(city);
             this.setupTabs();
           });
         });
@@ -116,7 +119,7 @@
                   <canvas id="weatherHistoryChart" width="400" height="300"></canvas>
                 </div>
                 <div class="tab-content" id="economy" style="display: none;">
-                  <p>경제 정보가 여기에 표시됩니다.</p>
+                    <canvas id="economyChart" width="400" height="300"></canvas>
                 </div>
                 <div class="tab-content" id="events" style="display: none;">
                   <p>사건 정보가 여기에 표시됩니다.</p>
@@ -129,17 +132,22 @@
       setupTabs() {
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
-  
+
         tabButtons.forEach(button => {
           button.addEventListener('click', () => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.style.display = 'none');
-  
+            tabContents.forEach(content => content.classList.remove('active'));
+
             button.classList.add('active');
-            document.getElementById(button.getAttribute('data-tab')).style.display = 'block';
+            const targetContent = document.getElementById(button.dataset.tab);
+            targetContent.classList.add('active');
+
           });
         });
+
+        document.querySelector('.tab-button[data-tab="weather"]').click(); // weather 탭을 처음에 클릭
       }
+
     }
   };
   </script>

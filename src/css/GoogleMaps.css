@@ -86,13 +86,23 @@ body, html, #app, #map {
 }
 
 .tab-contents {
-    flex: 1;
-    border: 1px solid rgba(204, 204, 204, 0.3); /* 투명도를 50%로 설정 */
-    border-radius: 8px;
-    padding: 10px;
-    font-family: 'Roboto', sans-serif; /* 세련된 폰트 추가 */
-    font-weight: 400; /* 폰트 두께 조정 */
-    box-shadow: 0 8px 16px rgba(59, 59, 59, 0.09); /* 더 진한 흐림 효과 */
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack elements vertically */
+  height: 350px; /* Set a height for the container */
+  border: 1px solid rgba(204, 204, 204, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  box-shadow: 0 8px 16px rgba(59, 59, 59, 0.09);
+}
+
+.tab-content {
+  display: none; /* 기본적으로 모든 탭 내용을 숨김 */
+}
+
+.tab-content.active {
+  display: block; /* active 클래스가 있는 탭 내용만 표시 */
 }
 
 /* 탭 버튼 스타일 설정 */
