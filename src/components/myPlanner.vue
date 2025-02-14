@@ -1,14 +1,14 @@
 <template>
   <div id="travel-planner" v-if="!showDetails">
     <h2>여행 계획표</h2>
-    <div v-if="!spreadsheetReady || savingData" class="spinner"></div>
-    <div id="spreadsheet" v-show="spreadsheetReady && !savingData"  ref="spreadsheet"></div>
+    <div v-if="!spreadsheetReady" class="spinner"></div>
+    <div id="spreadsheet" v-show="spreadsheetReady" style="display: block;" ref="spreadsheet"></div>
     <button @click="addRow" class="btn-add">추가</button>
     <button @click="deleteRow" class="btn-delete">삭제</button>
-    <button @click="saveData" class="btn-save" :disabled="!spreadsheetReady || savingData">저장</button>
+    <button @click="saveData" class="btn-save" :disabled="!spreadsheetReady">저장</button>
     <button @click="showDetailsForSelectedRow" class="btn-detail" style="margin-left:15px;">상세일정</button>
   </div>
-  <my-planner-detail v-else @hideDetails="hideDetails" @saveDetails="saveDetails" @saving="savingData = $event" :detailsData="detailsData" />
+  <my-planner-detail v-else @hideDetails="hideDetails" @saveDetails="saveDetails" :detailsData="detailsData" />
 </template>
 
 <script>
@@ -16,10 +16,11 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import jspreadsheet from 'jspreadsheet-ce';
 import 'jspreadsheet-ce/dist/jspreadsheet.css';
-import { FIREBASE_CONFIG } from '@/constants/constants';
+import { FIREBASE_CONFIG, PLANNER_COL_TITLE, PLANNER_COL_START_DATE, PLANNER_COL_END_DATE } from '@/constants/constants';
 import '../css/myPlanner.css';
 import MyPlannerDetail from './myPlanner_detail.vue';
 import spreadsheetMixin from '@/mixins/spreadsheetMixin';
+
 
 let app;
 if (!getApps().length) {
@@ -46,8 +47,7 @@ export default {
         rowIndex: null,
         details: []
       },
-      selectedRow: null, // Track the selected row
-      savingData: false // Add a flag to track saving status
+      selectedRow: null // Track the selected row
     };
   },
   async mounted() {
@@ -127,7 +127,7 @@ export default {
               const rowIndex = cell.parentNode.rowIndex -1;
               const columnIndex = cell.cellIndex;
 
-              if (rowIndex >= 0 && columnIndex === 0) { // Check for first column (index 0) and not header row
+              if (rowIndex >= 0 && columnIndex === PLANNER_COL_TITLE) { // Check for first column (index 0) and not header row
                 this.showDetailsForRow(rowIndex);
               }
             }
@@ -161,13 +161,28 @@ export default {
       await this.loadData(); // Reload the travel planner data
     },
     addRow() {
-      this.addRowMixin(this.jspreadsheetInstance); // Pass spreadsheetData
+      // Append a row at the bottom
+      if (this.jspreadsheetInstance) {
+        this.jspreadsheetInstance.insertRow([], this.jspreadsheetInstance.options.data.length);
+      }
     },
     deleteRow() {
-      this.deleteRowMixin(this.selectedRow, this.jspreadsheetInstance, this.selectedRow, this.spreadsheetData); // Pass spreadsheetData
+      if (this.selectedRow === null || this.selectedRow === undefined) {
+        alert('삭제할 행이 선택되지 않았습니다.');
+        return;
+      }
+      if (!confirm('정말 삭제하시겠습니까?')) {
+        return;
+      }
+      this.removeRowHighlight(this.jspreadsheetInstance); // Remove the highlight after deleting the row
+      // Delete the row from the jspreadsheet instance
+      this.jspreadsheetInstance.deleteRow(this.selectedRow);
+      // Update the internal data if needed
+      this.spreadsheetData.splice(this.selectedRow, 1);
+      // Reset the selected row
+      this.selectedRow = null;
     },
     async saveData() {
-      this.savingData = true; // Set savingData to true *before* the try block
       try {
         if (!this.jspreadsheetInstance) {
           throw new Error('Spreadsheet instance is not initialized.');
@@ -179,36 +194,32 @@ export default {
         }
         // Flatten the data array
         const flattenedData = data.map((row, index) => ({
-          title: row[0] || '',
-          startDate: row[1] || '',
-          endDate: row[2] || '',
+          title: row[PLANNER_COL_TITLE] || '',
+          startDate: row[PLANNER_COL_START_DATE] || '',
+          endDate: row[PLANNER_COL_END_DATE] || '',
           details: JSON.stringify(this.spreadsheetData[index]?.details || [])
         }));
         await setDoc(doc(db, 'travelPlans', 'plans'), { data: flattenedData, updatedAt: new Date() });
+        alert('저장이 완료되었습니다.'); // Alert after successful save
       } catch (error) {
         alert('저장에 실패했습니다. 다시 시도해주세요.');
         console.error("Error saving data to Firebase: ", error);
-      } finally {
-        this.savingData = false; // Reset savingData flag after save operation
       }
     },
     async saveDetails(details) {
-      this.savingData = true; // Set before try block
       if (this.selectedRow === null) {
         alert('선택된 행이 없습니다.');
-        this.savingData = false; // Reset if there is no selected row.
         return;
       }
-
       try {
         // Update the details in spreadsheetData
         this.spreadsheetData[this.detailsData.rowIndex].details = JSON.parse(JSON.stringify(details)); // Deep copy
         await this.saveData(); // Save the main spreadsheet data to Firebase
-        alert('저장 성공.'); // Update alert message for success  
+        // Emit saveDetailsComplete event after successfully saving, optionally pass any required data
+        this.$emit('saveDetailsComplete', details);
       } catch (error) {
+        console.error("Error saving details: ", error);
         alert('저장에 실패했습니다. 다시 시도해주세요.'); // Alert for save failure
-      } finally {
-        this.savingData = false; // Always reset in finally
       }
     }
   }
