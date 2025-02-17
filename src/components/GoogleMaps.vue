@@ -96,7 +96,7 @@
           <div class="info-window">
             <div class="header">
               <img src="${flagUrl}" alt="${city.code} flag" class="flag"/>
-              <b>${city.country_name || 'N/A'}</b>&nbsp;&nbsp;${city.name}
+              &nbsp;<b>${city.country_name || 'N/A'}</b>&nbsp;&nbsp;${city.name}
             </div>
             <div class="content">
               <div class="tabs">
@@ -118,10 +118,10 @@
                   <h3 class="chart-title">2024 Weather History</h3>
                   <canvas id="weatherHistoryChart" width="400" height="300"></canvas>
                 </div>
-                <div class="tab-content" id="economy" style="display: none;">
-                    <canvas id="economyChart" width="400" height="300"></canvas>
+                <div class="tab-content" id="economy">
+                    <canvas id="economyChart"></canvas>
                 </div>
-                <div class="tab-content" id="events" style="display: none;">
+                <div class="tab-content" id="events">
                   <p>사건 정보가 여기에 표시됩니다.</p>
                 </div>
               </div>
@@ -135,17 +135,33 @@
 
         tabButtons.forEach(button => {
           button.addEventListener('click', () => {
+            // 1. 모든 탭 버튼과 콘텐츠 비활성화
             tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
+            tabContents.forEach(content => {
+              content.style.display = 'none'; // display: none으로 설정
+              content.classList.remove('active');
+            });
 
+            // 2. 클릭한 탭 버튼과 콘텐츠 활성화
             button.classList.add('active');
             const targetContent = document.getElementById(button.dataset.tab);
+            targetContent.style.display = 'block'; // display: block으로 설정
             targetContent.classList.add('active');
-
           });
         });
 
-        document.querySelector('.tab-button[data-tab="weather"]').click(); // weather 탭을 처음에 클릭
+        // 초기 탭 설정
+        const weatherTab = document.querySelector('.tab-button[data-tab="weather"]');
+        weatherTab.classList.add('active'); // weather 탭 버튼 활성화
+        
+        const weatherContent = document.getElementById('weather');
+        weatherContent.style.display = 'block'; // weather 탭 콘텐츠 표시
+
+        tabContents.forEach(content => {
+          if (content !== weatherContent) {
+            content.style.display = 'none';  // 다른 탭 콘텐츠 숨기기
+          }
+        });
       }
 
     }

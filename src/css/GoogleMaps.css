@@ -44,8 +44,9 @@ body, html, #app, #map {
   }
 
   .info-window img {
-    margin-right: 5px;
-  }
+    max-width: 100%; /* 이미지가 InfoWindow 너비를 초과하지 않도록 설정 */
+    height: auto;
+}
 
 .header {
     background-color: rgb(233, 233, 233);
@@ -88,21 +89,12 @@ body, html, #app, #map {
 .tab-contents {
   display: flex; /* Use flexbox */
   flex-direction: column; /* Stack elements vertically */
-  height: 350px; /* Set a height for the container */
   border: 1px solid rgba(204, 204, 204, 0.3);
   border-radius: 8px;
   padding: 10px;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   box-shadow: 0 8px 16px rgba(59, 59, 59, 0.09);
-}
-
-.tab-content {
-  display: none; /* 기본적으로 모든 탭 내용을 숨김 */
-}
-
-.tab-content.active {
-  display: block; /* active 클래스가 있는 탭 내용만 표시 */
 }
 
 /* 탭 버튼 스타일 설정 */
@@ -143,9 +135,4 @@ body, html, #app, #map {
     background-color: #add8e6; /* 라이트 블루 색상 */
     box-shadow: 0 10px 14px rgba(0,0,0,0.3); /* 더 진한 그림자 */
     transform: translateY(-3px); /* 살짝 올라가는 효과 */
-}
-
-/* InfoWindow 스타일 */
-.gm-style .gm-style-iw-c {
-    padding: 6px;
 }

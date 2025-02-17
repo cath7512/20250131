@@ -913,7 +913,7 @@
         "country_name": "Russia"
     },
     {
-        "name": "Bras\ucc60lia",
+        "name": "Brazilia",
         "code": "BR",
         "coordinates": {
             "lat": -15.7801,
@@ -2241,7 +2241,7 @@
         "country_name": "Argentina"
     },
     {
-        "name": "Bogot\ucc3c",
+        "name": "Bogota",
         "code": "CO",
         "coordinates": {
             "lat": 4.611,
