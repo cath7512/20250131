@@ -17,7 +17,8 @@
     name: 'GoogleMaps',
     data() {
         return {
-        openInfoWindow: null
+        openInfoWindow: null,
+        lastActiveTab: 'weather' // Remember the last active tab
         };
     },    
     mounted() {
@@ -100,7 +101,7 @@
             </div>
             <div class="content">
               <div class="tabs">
-                <button class="tab-button active" data-tab="weather">
+                <button class="tab-button" data-tab="weather">
                   <img src="../assets/icons/weather.png" alt="날씨 아이콘">
                 </button>
                 <button class="tab-button" data-tab="economy">
@@ -147,24 +148,25 @@
             const targetContent = document.getElementById(button.dataset.tab);
             targetContent.style.display = 'block'; // display: block으로 설정
             targetContent.classList.add('active');
+
+            // Remember the last active tab
+            this.lastActiveTab = button.dataset.tab;
           });
         });
 
         // 초기 탭 설정
-        const weatherTab = document.querySelector('.tab-button[data-tab="weather"]');
-        weatherTab.classList.add('active'); // weather 탭 버튼 활성화
+        const initialTab = document.querySelector(`.tab-button[data-tab="${this.lastActiveTab}"]`) || document.querySelector('.tab-button[data-tab="weather"]');
+        initialTab.classList.add('active'); // Activate the initial tab button
         
-        const weatherContent = document.getElementById('weather');
-        weatherContent.style.display = 'block'; // weather 탭 콘텐츠 표시
+        const initialContent = document.getElementById(this.lastActiveTab) || document.getElementById('weather');
+        initialContent.style.display = 'block'; // Show the initial tab content
 
         tabContents.forEach(content => {
-          if (content !== weatherContent) {
-            content.style.display = 'none';  // 다른 탭 콘텐츠 숨기기
+          if (content !== initialContent) {
+            content.style.display = 'none';  // Hide other tab contents
           }
         });
       }
-
     }
   };
   </script>
-  
