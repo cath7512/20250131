@@ -124,10 +124,6 @@
   background-color: #5a6268;
 }
 
-/* Use new Forced Colors Mode standard properties */
-.example-class {
-  forced-color-adjust: none; /* New standard property */
-  /* Other styles */
-}
+
 
 

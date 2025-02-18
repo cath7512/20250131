@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import jspreadsheet from 'jspreadsheet-ce';
@@ -20,7 +22,6 @@ import { FIREBASE_CONFIG, PLANNER_COL_TITLE, PLANNER_COL_START_DATE, PLANNER_COL
 import '../css/myPlanner.css';
 import MyPlannerDetail from './myPlanner_detail.vue';
 import spreadsheetMixin from '@/mixins/spreadsheetMixin';
-
 
 let app;
 if (!getApps().length) {
@@ -100,17 +101,23 @@ export default {
         ],
         minDimensions: [3, this.spreadsheetData.length], // Set minDimensions based on data length
         contextMenu: false, // Disable right-click context menu
-        onselection: (instance, x1, y1, x2, y2) => {
+        onselection: (instance, x1, y1) => {  // Remove unused parameters x2, y2
           this.selectedRow = y1;
-          this.highlightSelectedRow(this.jspreadsheetInstance, y1); // Use the mixin method
+          this.highlightSelectedRow(this.spreadsheetInstance, y1); // Use the mixin method
         },
         onload: async () => {
           this.spreadsheetReady = true; // Mark spreadsheet as ready
           setTimeout(() => {  //  <- Key change here
             this.addDoubleClickListeners();
           }, 0);       
+        },
+        onbeforechange: (instance, cell, col, row, val) => {
+          if (typeof val === 'number' && !isNaN(val)) {
+            return Number(val).toFixed(2);
+          }
+          return val;
         }
-      });   
+      });
     },
     addDoubleClickListeners() {  // Add this method
       if (!this.jspreadsheetInstance) {

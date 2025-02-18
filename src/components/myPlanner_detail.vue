@@ -16,10 +16,11 @@ import 'jspreadsheet-ce/dist/jspreadsheet.css';
 import spreadsheetMixin from '@/mixins/spreadsheetMixin';
 import '../css/myPlanner.css';
 import { 
-  PLANNER_DETAIL_COL_DATE, PLANNER_DETAIL_COL_DEPARTURE, PLANNER_DETAIL_COL_DESTINATION,
-  PLANNER_DETAIL_COL_SCHEDULE, PLANNER_DETAIL_COL_ACCOMMODATION, PLANNER_DETAIL_COL_TRANSPORT_COST,
-  PLANNER_DETAIL_COL_LODGING_COST, PLANNER_DETAIL_COL_FOOD_COST, PLANNER_DETAIL_COL_ADMISSION_COST,
-  PLANNER_DETAIL_COL_TOTAL_COST, PLANNER_DETAIL_COL_NOTES
+  PLANNER_DETAIL_COL_TRANSPORT_COST,
+  PLANNER_DETAIL_COL_LODGING_COST,
+  PLANNER_DETAIL_COL_FOOD_COST,
+  PLANNER_DETAIL_COL_ADMISSION_COST,
+  PLANNER_DETAIL_COL_TOTAL_COST
 } from '@/constants/constants';
 
 export default {
@@ -82,24 +83,36 @@ export default {
             this.highlightSelectedRow(this.detailsSpreadsheetInstance, y1); // Use mixin's method
           },
           onchange: (instance, cell, x, y) => {
-            const data = instance.jexcel.getData();
+            const data = instance.getData();
+            if (data[y] && data[y].length > 0) {
+              let total = 0;
+              [PLANNER_DETAIL_COL_TRANSPORT_COST, PLANNER_DETAIL_COL_LODGING_COST, 
+               PLANNER_DETAIL_COL_FOOD_COST, PLANNER_DETAIL_COL_ADMISSION_COST].forEach(col => {
+                // 안전한 숫자 변환 처리
+                const rawValue = data[y][col];
+                let value = 0;
+                
+                if (typeof rawValue === 'string') {
+                  // 숫자와 소수점만 남기고 제거
+                  const cleaned = rawValue.replace(/[^\d.-]/g, '');
+                  value = cleaned ? parseFloat(cleaned) : 0;
+                } else if (typeof rawValue === 'number') {
+                  value = rawValue;
+                }
+                
+                if (!Number.isNaN(value)) {
+                  total += value;
+                }
+              });
 
-            // Check if the row has enough data before accessing specific columns
-            if (data[y] && data[y].length > instance.options.columns.length) { //  <-- Check data[y] and length
-              if (x >= PLANNER_DETAIL_COL_TRANSPORT_COST && x <= PLANNER_DETAIL_COL_ADMISSION_COST) {
-                const transport = parseFloat(data[y][PLANNER_DETAIL_COL_TRANSPORT_COST]) || 0;
-                const lodging = parseFloat(data[y][PLANNER_DETAIL_COL_LODGING_COST]) || 0;
-                const food = parseFloat(data[y][PLANNER_DETAIL_COL_FOOD_COST]) || 0;
-                const admission = parseFloat(data[y][PLANNER_DETAIL_COL_ADMISSION_COST]) || 0;
-                const total = transport + lodging + food + admission;
-                instance.jexcel.setValueFromCoords(PLANNER_DETAIL_COL_TOTAL_COST, y, total);
-              }
-            } else {
-              // Log a warning or handle the case where the row doesn't have enough data
-              console.warn(`Row ${y + 1} does not have enough data yet. Skipping total calculation.`);
+              // 정수로 반올림하여 문자열로 변환
+              const formattedTotal = Math.round(total).toString();
+              
+              // 데이터 직접 업데이트
+              data[y][PLANNER_DETAIL_COL_TOTAL_COST] = formattedTotal;
+              instance.setData(data);
             }
-
-            instance.jexcel.updateTable();
+            instance.updateTable();
           },
           onload: () => {
             this.detailsSpreadsheetInstance.options.minDimensions = [this.detailsSpreadsheetInstance.options.columns.length, this.detailsData.details.length || 1];

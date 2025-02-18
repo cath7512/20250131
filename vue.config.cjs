@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service');
 const webpack = require('webpack');
 
 module.exports = defineConfig({
+  transpileDependencies: true,
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
@@ -11,19 +12,34 @@ module.exports = defineConfig({
     module: {
       rules: [
         {
-          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: 'assets/country_flags/[name].[ext]'
-              }
+          test: /\.m?js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              sourceType: 'module',
+              presets: ['@babel/preset-env']
             }
-          ]
+          }
         }
       ]
+    },
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+      fallback: {
+        path: false,
+        fs: false
+      }
     }
   },
-  productionSourceMap: true, // 프로덕션 모드에서도 소스 맵을 생성하려면 true로 설정
-  lintOnSave: false  
+  chainWebpack: config => {
+    config.module
+      .rule('js')
+      .use('babel-loader')
+      .loader('babel-loader')
+      .tap(options => ({
+        ...options,
+        sourceType: 'module'
+      }));
+  }
 });
