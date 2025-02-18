@@ -12,6 +12,7 @@ export const FIREBASE_CONFIG = {
     appId: "1:171778696158:web:32e411ec73086aaa63334f",
     measurementId: "G-W9LRC31LYX"
   };
+export const YOUTUBE_API_KEY = 'AIzaSyDsnTLzPhhK5qxGVWenUJpRUOPSwn5uoLg';
 
 // PLANNER.JS
 export const PLANNER_COL_TITLE = 0;

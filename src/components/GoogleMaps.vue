@@ -4,10 +4,11 @@
   
   <script>
   /* global google */
-  import { GOOGLE_MAPS_API_KEY } from '../constants/constants';
-  import { GOOGLE_MAP_ID } from '../constants/constants';
+  import { createApp, h } from 'vue'; // Import Vue and h function
+  import { GOOGLE_MAPS_API_KEY, GOOGLE_MAP_ID } from '../constants/constants';
   import { createWeatherForecastChart, createWeatherHistoryChart } from './WeatherGraph';
   import { createEconomyChart } from './EconomyGraph';
+  import TabYoutube from './TabYoutube.vue'; // Correct the import statement
 
   import '../css/GoogleMaps.css';
   import '../css/myPlanner.css';
@@ -15,10 +16,14 @@
   
   export default {
     name: 'GoogleMaps',
+    components: {
+      TabYoutube
+    },
     data() {
         return {
         openInfoWindow: null,
-        lastActiveTab: 'weather' // Remember the last active tab
+        lastActiveTab: 'weather', // Remember the last active tab
+        youTubeSearch: null
         };
     },    
     mounted() {
@@ -80,6 +85,7 @@
           if (this.openInfoWindow) {
             this.openInfoWindow.close();
           }
+          this.youTubeSearch = `${city.country_name} ${city.name}`; // Set the current city when marker is clicked
           infoWindow.open(map, marker);
           this.openInfoWindow = infoWindow;
           google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
@@ -110,6 +116,9 @@
                 <button class="tab-button" data-tab="events">
                   <img src="../assets/icons/accident.png" alt="사건 아이콘">
                 </button>
+                <button class="tab-button" data-tab="youtube">
+                  <img src="../assets/icons/youtube.svg" alt="유튜브 아이콘">
+                </button>
               </div>
               <div class="tab-contents">
                 <div class="tab-content" id="weather">
@@ -124,6 +133,9 @@
                 </div>
                 <div class="tab-content" id="events">
                   <p>사건 정보가 여기에 표시됩니다.</p>
+                </div>
+                <div class="tab-content" id="youtube">
+                  <div id="youtube-container"></div>
                 </div>
               </div>
             </div>
@@ -151,6 +163,10 @@
 
             // Remember the last active tab
             this.lastActiveTab = button.dataset.tab;
+
+            if (this.lastActiveTab === 'youtube') {
+              this.mountYoutubeComponent();
+            }
           });
         });
 
@@ -166,7 +182,21 @@
             content.style.display = 'none';  // Hide other tab contents
           }
         });
-      }
+
+        if (this.lastActiveTab === 'youtube') {
+          this.mountYoutubeComponent();
+        }
+      },
+      mountYoutubeComponent() {
+        const container = document.getElementById('youtube-container');
+        if (container && this.youTubeSearch) {
+          createApp({
+            render: () => h(TabYoutube, {
+              youTubeSearch: this.youTubeSearch
+            })
+          }).mount(container);
+        }
+      },
     }
   };
   </script>

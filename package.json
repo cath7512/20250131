@@ -5,14 +5,18 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "node server.mjs"
   },
+  "type": "module",
   "dependencies": {
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.0.0",
     "core-js": "^3.40.0",
+    "cors": "^2.8.5",
     "firebase": "^11.2.0",
     "jspreadsheet-ce": "^4.15.0",
+    "puppeteer": "^24.2.1",
     "tailwind": "^4.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.5.0"

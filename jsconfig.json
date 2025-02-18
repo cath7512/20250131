@@ -18,5 +18,5 @@
   },
   "include": [
     "src/**/*.js"
-  ]
+, "src/components/scrapeYouTube.mjs", "src/components/server.mjs"  ]
 }
