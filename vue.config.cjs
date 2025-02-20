@@ -2,44 +2,28 @@ const { defineConfig } = require('@vue/cli-service');
 const webpack = require('webpack');
 
 module.exports = defineConfig({
-  transpileDependencies: true,
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
-        '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': JSON.stringify(true)
+        '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': JSON.stringify(true) // For better hydration mismatch error messages
       })
     ],
     module: {
       rules: [
         {
-          test: /\.m?js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              sourceType: 'module',
-              presets: ['@babel/preset-env']
+          test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'assets/country_flags/[name].[ext]'
+              }
             }
-          }
+          ]
         }
       ]
-    },
-    resolve: {
-      extensions: ['.js', '.vue', '.json'],
-      fallback: {
-        path: false,
-        fs: false
-      }
     }
   },
-  chainWebpack: config => {
-    config.module
-      .rule('js')
-      .use('babel-loader')
-      .loader('babel-loader')
-      .tap(options => ({
-        ...options,
-        sourceType: 'module'
-      }));
-  }
+  productionSourceMap: true, // 프로덕션 모드에서도 소스 맵을 생성하려면 true로 설정
+  lintOnSave: false  
 });
