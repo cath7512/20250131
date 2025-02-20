@@ -136,3 +136,75 @@ body, html, #app, #map {
     box-shadow: 0 10px 14px rgba(0,0,0,0.3); /* 더 진한 그림자 */
     transform: translateY(-3px); /* 살짝 올라가는 효과 */
 }
+
+/* World Bank 선택 박스 스타일 */
+.wb-select {
+  width: 350px;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  background-color: white;
+  cursor: pointer;
+}
+
+.wb-select:hover {
+  border-color: #888;
+}
+
+.wb-select:focus {
+  outline: none;
+  border-color: #87CEEB;
+  box-shadow: 0 0 5px rgba(135, 206, 235, 0.3);
+}
+
+/* World Bank 차트 */
+.chart-container {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 기존 tab-content 스타일 수정 */
+.tab-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* World Bank 차트 로딩 스타일 */
+.chart-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 50%;
+  display: none;
+  z-index: 1;
+}
+
+/* 스피너 애니메이션 */
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #87CEEB;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

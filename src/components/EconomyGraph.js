@@ -1,13 +1,15 @@
-// economygraph.js
-import { Chart, registerables } from 'chart.js';
+import { Chart } from 'chart.js/auto'; // Use auto-import for automatic registration
 import cityEconomyData from '../assets/city_economy.json';
-Chart.register(...registerables);
+import { createWorldBankChart, updateWorldBankChart } from './EconomyGraph_WorldBank';
 
 let economyChart = null;
 
-export function createEconomyChart(city) {
+function createEconomyChart(city) {
   const canvas = document.getElementById('economyChart');
-  if (!canvas) return;
+  if (!canvas) {
+    console.error('Economy chart canvas not found');
+    return;
+  }
 
   // 1. Destroy existing chart
   if (economyChart) {
@@ -40,56 +42,79 @@ export function createEconomyChart(city) {
     return;
   }
 
-  economyChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        { // GDP per capita dataset
-          label: 'GDP per capita',
-          data: gdpValues,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          fill: false,
-          yAxisID: 'yGDP' // Assign to the left y-axis
-        },
-        { // Population dataset
-          label: 'Population',
-          data: populationValues,
-          borderColor: 'rgba(255, 99, 132, 1)', // Red color for population
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          fill: false,
-          yAxisID: 'yPopulation'
-        }
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: {
-          display: true,
-          title: {
-            display: true,
-            text: 'Year',
+  try {
+    economyChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          { // GDP per capita dataset
+            label: 'GDP per capita',
+            data: gdpValues,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: false,
+            yAxisID: 'yGDP' // Assign to the left y-axis
           },
-        },
-        yGDP: { // Left y-axis for GDP
-          type: 'linear',
-          position: 'left',
-          title: {
+          { // Population dataset
+            label: 'Population',
+            data: populationValues,
+            borderColor: 'rgba(255, 99, 132, 1)', // Red color for population
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: false,
+            yAxisID: 'yPopulation'
+          }
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
             display: true,
-            text: 'GDP per Capita ($)',
+            title: {
+              display: true,
+              text: 'Year',
+            },
           },
-        },
-        yPopulation: { // Right y-axis for Population
-          type: 'linear',
-          position: 'right',
-          title: {
-            display: true,
-            text: 'Population',
+          yGDP: { // Left y-axis for GDP
+            type: 'linear',
+            position: 'left',
+            title: {
+              display: true,
+              text: 'GDP per Capita ($)',
+            },
+          },
+          yPopulation: { // Right y-axis for Population
+            type: 'linear',
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Population',
+            },
           },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error('Error creating economy chart:', error);
+  }
 }
+
+async function createEconomyCharts(city) {
+  // Create GDP and Population chart
+  createEconomyChart(city);
+
+  // Create initial World Bank chart with CPI data
+  await createWorldBankChart(city);
+}
+
+// 새로운 함수 추가
+function updateWorldBankIndicator(city, indicator) {
+  updateWorldBankChart(city, indicator);
+}
+
+export {
+  createEconomyChart,
+  createEconomyCharts,
+  updateWorldBankIndicator
+};

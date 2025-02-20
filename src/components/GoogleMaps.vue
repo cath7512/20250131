@@ -3,11 +3,10 @@
   </template>
   
   <script>
-  /* global google */
   import { GOOGLE_MAPS_API_KEY } from '../constants/constants';
   import { GOOGLE_MAP_ID } from '../constants/constants';
   import { createWeatherForecastChart, createWeatherHistoryChart } from './WeatherGraph';
-  import { createEconomyChart } from './EconomyGraph';
+  import { createEconomyCharts, updateWorldBankIndicator } from './EconomyGraph';  // updateWorldBankIndicator 추가
 
   import '../css/GoogleMaps.css';
   import '../css/myPlanner.css';
@@ -17,7 +16,9 @@
     name: 'GoogleMaps',
     data() {
         return {
-        openInfoWindow: null
+        openInfoWindow: null,
+        lastActiveTab: 'weather',
+        lastWorldBankIndicator: 'CPI'  // 마지막 선택한 World Bank 지표 저장
         };
     },    
     mounted() {
@@ -84,8 +85,9 @@
           google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
             createWeatherForecastChart(city);
             createWeatherHistoryChart(city);
-            createEconomyChart(city);
+            createEconomyCharts(city);
             this.setupTabs();
+            this.setupWorldBankSelect(city);
           });
         });
       },
@@ -119,7 +121,20 @@
                   <canvas id="weatherHistoryChart" width="400" height="300"></canvas>
                 </div>
                 <div class="tab-content" id="economy">
-                    <canvas id="economyChart"></canvas>
+                  <h3 class="chart-title">GDP and Population</h3>
+                  <canvas id="economyChart" width="400" height="300"></canvas>
+                  <br>
+                  <select id="worldBankIndicator" class="wb-select">
+                    <option value="CPI">Consumer Price Index</option>
+                    <option value="savings">Gross savings (% of GDP)</option>
+                    <option value="internet">Individuals using the Internet (% of population)</option>
+                  </select>
+                  <div class="chart-container">
+                    <div id="worldbankChartLoading" class="chart-loading">
+                      <div class="spinner"></div>
+                    </div>
+                    <canvas id="worldbankChart"></canvas>
+                  </div>
                 </div>
                 <div class="tab-content" id="events">
                   <p>사건 정보가 여기에 표시됩니다.</p>
@@ -133,38 +148,60 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
+        // 먼저 모든 탭과 컨텐츠의 active 상태 제거
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => {
+          content.style.display = 'none';
+          content.classList.remove('active');
+        });
+
         tabButtons.forEach(button => {
           button.addEventListener('click', () => {
             // 1. 모든 탭 버튼과 콘텐츠 비활성화
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => {
-              content.style.display = 'none'; // display: none으로 설정
+              content.style.display = 'none';
               content.classList.remove('active');
             });
 
             // 2. 클릭한 탭 버튼과 콘텐츠 활성화
             button.classList.add('active');
             const targetContent = document.getElementById(button.dataset.tab);
-            targetContent.style.display = 'block'; // display: block으로 설정
+            targetContent.style.display = 'block';
             targetContent.classList.add('active');
+
+            // 3. 선택한 탭 저장
+            this.lastActiveTab = button.dataset.tab;
           });
         });
 
-        // 초기 탭 설정
-        const weatherTab = document.querySelector('.tab-button[data-tab="weather"]');
-        weatherTab.classList.add('active'); // weather 탭 버튼 활성화
-        
-        const weatherContent = document.getElementById('weather');
-        weatherContent.style.display = 'block'; // weather 탭 콘텐츠 표시
-
-        tabContents.forEach(content => {
-          if (content !== weatherContent) {
-            content.style.display = 'none';  // 다른 탭 콘텐츠 숨기기
+        // 마지막으로 선택한 탭 활성화
+        const activeTab = document.querySelector(`.tab-button[data-tab="${this.lastActiveTab}"]`);
+        if (activeTab) {
+          activeTab.classList.add('active');
+          const activeContent = document.getElementById(this.lastActiveTab);
+          if (activeContent) {
+            activeContent.style.display = 'block';
+            activeContent.classList.add('active');
           }
-        });
-      }
+        }
+      },
+      setupWorldBankSelect(city) {
+        const select = document.getElementById('worldBankIndicator');
+        if (!select) return;
 
+        // select 값을 마지막 선택한 값으로 설정
+        select.value = this.lastWorldBankIndicator;
+
+        select.addEventListener('change', async (event) => {
+          const indicator = event.target.value;
+          this.lastWorldBankIndicator = indicator;  // 선택한 값 저장
+          updateWorldBankIndicator(city, indicator);
+        });
+
+        // 초기 차트 로드 - 마지막 선택한 지표 사용
+        updateWorldBankIndicator(city, this.lastWorldBankIndicator);
+      }
     }
   };
   </script>
-  

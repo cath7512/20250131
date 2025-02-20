@@ -4,8 +4,10 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 
-createApp(App).use(router).mount('#app');
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
 
-if (module.hot) {
-  module.hot.accept();
+if (import.meta.hot) {
+  import.meta.hot.accept();
 }
