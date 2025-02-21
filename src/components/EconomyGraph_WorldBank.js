@@ -21,6 +21,26 @@ const indicatorMap = {
   'internet': {
     id: 'IT.NET.USER.ZS',
     title: 'Individuals using the Internet (%)'
+  },
+  'BirthRate': {
+    id: 'SP.DYN.CBRT.IN',
+    title: 'Birth rate, crude (per 1,000 people)'
+  },
+  'AccessToElectricity': {
+    id: 'EG.ELC.ACCS.ZS',
+    title: 'Access to electricity (% of population)'
+  },
+  'SafeWaterAccess': {
+    id: 'SH.H2O.SMDW.ZS',
+    title: 'People using safely managed drinking water services(% of population)'
+  },
+  'ODAreceived': {
+    id: 'DT.ODA.ALLD.CD',
+    title: 'Net official development assistance and official aid received (current US$)'
+  },
+  'NetMigration': {
+    id: 'SM.POP.NETM',
+    title: 'Net migration'
   }
 };
 
@@ -116,13 +136,6 @@ async function updateWorldBankChart(city, indicator) {
         scales: {
           y: {
             beginAtZero: true,
-            title: {
-              display: true,
-              text: indicatorMap[indicator].title,
-              font: {
-                size: 11
-              }
-            },
             ticks: {
               font: {
                 size: 10

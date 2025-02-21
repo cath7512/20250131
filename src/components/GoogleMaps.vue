@@ -123,11 +123,16 @@
                 <div class="tab-content" id="economy">
                   <h3 class="chart-title">GDP and Population</h3>
                   <canvas id="economyChart" width="400" height="300"></canvas>
-                  <br>
+                  <br>World Bank
                   <select id="worldBankIndicator" class="wb-select">
                     <option value="CPI">Consumer Price Index</option>
                     <option value="savings">Gross savings (% of GDP)</option>
                     <option value="internet">Individuals using the Internet (% of population)</option>
+                    <option value="BirthRate">Birth rate, crude (per 1,000 people)</option>
+                    <option value="AccessToElectricity">Access to electricity (% of population)</option>
+                    <option value="SafeWaterAccess">People using safely managed drinking water services(% of population)</option>
+                    <option value="ODAreceived">Net official development assistance and official aid received (current US$)</option>
+                    <option value="NetMigration">Net migration</option>
                   </select>
                   <div class="chart-container">
                     <div id="worldbankChartLoading" class="chart-loading">
