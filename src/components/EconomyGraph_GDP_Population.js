@@ -117,4 +117,4 @@ export {
   createEconomyChart,
   createEconomyCharts,
   updateWorldBankIndicator
-};
+}; 

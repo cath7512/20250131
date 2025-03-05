@@ -1,14 +1,5 @@
 import { Chart } from 'chart.js/auto'; // Use auto-import for automatic registration
 
-function getDateRange() {
-  const currentYear = new Date().getFullYear();
-  const startYear = currentYear - 10;
-  return {
-    start: startYear,
-    end: currentYear
-  };
-}
-
 const indicatorMap = {
   'CPI': {
     id: 'FP.CPI.TOTL',
@@ -46,12 +37,15 @@ const indicatorMap = {
 
 async function fetchWorldBankData(countryCode, indicator) {
   try {
-    const { start, end } = getDateRange();
-    const indicatorId = indicatorMap[indicator].id;
+    // 최근 10년 데이터 추출
+    const end = new Date().getFullYear();
+    const start = end - 10;
+
+    // WorldBank api 호출
     const response = await fetch(
-      `https://api.worldbank.org/v2/countries/${countryCode}/indicators/${indicatorId}?date=${start}:${end}&format=json`
+      `https://api.worldbank.org/v2/countries/${countryCode}/indicators/${indicatorMap[indicator].id}?date=${start}:${end}&format=json`
     );
-    const [metadata, data] = await response.json();
+    const [, data] = await response.json();
     return data ? data.reverse() : [];
   } catch (error) {
     console.error('Error fetching World Bank data:', error);
@@ -159,6 +153,7 @@ async function updateWorldBankChart(city, indicator) {
         }
       }
     });
+    return chart;
   } catch (error) {
     console.error('Error creating World Bank chart:', error);
   } finally {

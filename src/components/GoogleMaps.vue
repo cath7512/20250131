@@ -6,7 +6,9 @@
   import { GOOGLE_MAPS_API_KEY } from '../constants/constants';
   import { GOOGLE_MAP_ID } from '../constants/constants';
   import { createWeatherForecastChart, createWeatherHistoryChart } from './WeatherGraph';
-  import { createEconomyCharts, updateWorldBankIndicator } from './EconomyGraph';  // updateWorldBankIndicator 추가
+  import { createEconomyCharts, updateWorldBankIndicator } from './EconomyGraph_GDP_Population';
+  import { createInterestInflationChart } from './EconomyGraph_InterestRate_Inflation';
+  import { setupWHOSelect } from './EconomyGraph_WHO';
 
   import '../css/GoogleMaps.css';
   import '../css/myPlanner.css';
@@ -18,7 +20,8 @@
         return {
         openInfoWindow: null,
         lastActiveTab: 'weather',
-        lastWorldBankIndicator: 'CPI'  // 마지막 선택한 World Bank 지표 저장
+        lastWorldBankIndicator: 'CPI',  // 마지막 선택한 World Bank 지표 저장
+        lastEconomySection: 'summary'  // 마지막 선택한 economy 섹션 저장
         };
     },    
     mounted() {
@@ -76,7 +79,7 @@
           content: infoWindowContent
         });
   
-        marker.addListener('click', () => {
+        marker.addListener('gmp-click', () => {
           if (this.openInfoWindow) {
             this.openInfoWindow.close();
           }
@@ -86,8 +89,10 @@
             createWeatherForecastChart(city);
             createWeatherHistoryChart(city);
             createEconomyCharts(city);
+            createInterestInflationChart(city);
             this.setupTabs();
             this.setupWorldBankSelect(city);
+            setupWHOSelect(city);
           });
         });
       },
@@ -121,24 +126,53 @@
                   <canvas id="weatherHistoryChart" width="400" height="300"></canvas>
                 </div>
                 <div class="tab-content" id="economy">
-                  <h3 class="chart-title">GDP and Population</h3>
-                  <canvas id="economyChart" width="400" height="300"></canvas>
-                  <br>World Bank
-                  <select id="worldBankIndicator" class="wb-select">
-                    <option value="CPI">Consumer Price Index</option>
-                    <option value="savings">Gross savings (% of GDP)</option>
-                    <option value="internet">Individuals using the Internet (% of population)</option>
-                    <option value="BirthRate">Birth rate, crude (per 1,000 people)</option>
-                    <option value="AccessToElectricity">Access to electricity (% of population)</option>
-                    <option value="SafeWaterAccess">People using safely managed drinking water services(% of population)</option>
-                    <option value="ODAreceived">Net official development assistance and official aid received (current US$)</option>
-                    <option value="NetMigration">Net migration</option>
-                  </select>
-                  <div class="chart-container">
-                    <div id="worldbankChartLoading" class="chart-loading">
-                      <div class="spinner"></div>
+                  <div class="economy-buttons">
+                    <button class="economy-btn active" data-section="summary">Summary</button>
+                    <button class="economy-btn" data-section="world-bank">World Bank</button>
+                    <button class="economy-btn" data-section="who">WHO</button>
+                  </div>
+                  <div id="summary-section" class="economy-section">
+                    <h3 class="chart-title">GDP, Population</h3>
+                    <canvas id="economyChart" width="400" height="300"></canvas>
+                    <h3 class="chart-title">Benchmart Interest Rate, Inflation</h3>
+                    <div class="chart-container">
+                      <div id="interestInflationChartLoading" class="chart-loading">
+                        <div class="spinner"></div>
+                      </div>
+                      <canvas id="interestInflationChart" width="400" height="300"></canvas>
                     </div>
-                    <canvas id="worldbankChart"></canvas>
+                  </div>
+                  <div id="world-bank-section" class="economy-section" style="display: none;">
+                    <select id="worldBankIndicator" class="wb-select">
+                      <option value="CPI">Consumer Price Index</option>
+                      <option value="savings">Gross savings (% of GDP)</option>
+                      <option value="internet">Individuals using the Internet (% of population)</option>
+                      <option value="BirthRate">Birth rate, crude (per 1,000 people)</option>
+                      <option value="AccessToElectricity">Access to electricity (% of population)</option>
+                      <option value="SafeWaterAccess">People using safely managed drinking water services(% of population)</option>
+                      <option value="ODAreceived">Net official development assistance and official aid received (current US$)</option>
+                      <option value="NetMigration">Net migration</option>
+                    </select>
+                    <div class="chart-container">
+                      <div id="worldbankChartLoading" class="chart-loading">
+                        <div class="spinner"></div>
+                      </div>
+                      <canvas id="worldbankChart"></canvas>
+                    </div>
+                  </div>
+                  <div id="who-section" class="economy-section" style="display: none;">
+                    <select id="whoIndicator" class="wb-select">
+                      <option value="PVT-D">Domestic private health expenditure (PVT-D) per capita in US$</option>
+                      <option value="ROAD_TRAFFIC_DEATH">Estimated road traffic death rate (per 100 000 population)</option>
+                      <option value="FOODBORNE_ILLNESS">Foodborne illnesses per 100 000 (median, 95% uncertainty interval)</option>
+                      <option value="NEONATAL_MORTALITY">Neonatal mortality rate (0 to 27 days) per 1000 live births) (SDG 3.2.2)</option>
+                    </select>
+                    <div class="chart-container">
+                      <div id="whoChartLoading" class="chart-loading">
+                        <div class="spinner"></div>
+                      </div>
+                      <canvas id="whoChart"></canvas>
+                    </div>
                   </div>
                 </div>
                 <div class="tab-content" id="events">
@@ -190,6 +224,44 @@
             activeContent.classList.add('active');
           }
         }
+
+        // Economy section buttons handler
+        const economyButtons = document.querySelectorAll('.economy-btn');
+        const economySections = document.querySelectorAll('.economy-section');
+
+        // Set initial active button based on lastEconomySection
+        const initialActiveButton = document.querySelector(`.economy-btn[data-section="${this.lastEconomySection}"]`);
+        if (initialActiveButton) {
+          economyButtons.forEach(btn => btn.classList.remove('active'));
+          initialActiveButton.classList.add('active');
+          
+          // Show the corresponding section
+          economySections.forEach(section => section.style.display = 'none');
+          const initialSection = document.getElementById(`${this.lastEconomySection}-section`);
+          if (initialSection) {
+            initialSection.style.display = 'block';
+          }
+        }
+
+        economyButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            economyButtons.forEach(btn => btn.classList.remove('active'));
+            // Hide all sections
+            economySections.forEach(section => section.style.display = 'none');
+
+            // Add active class to clicked button
+            button.classList.add('active');
+            // Show corresponding section
+            const sectionId = `${button.dataset.section}-section`;
+            const section = document.getElementById(sectionId);
+            if (section) {
+              section.style.display = 'block';
+            }
+            // Save the selected section
+            this.lastEconomySection = button.dataset.section;
+          });
+        });
       },
       setupWorldBankSelect(city) {
         const select = document.getElementById('worldBankIndicator');

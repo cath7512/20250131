@@ -160,6 +160,46 @@ body, html, #app, #map {
   box-shadow: 0 0 5px rgba(135, 206, 235, 0.3);
 }
 
+/* Economy Buttons */
+.economy-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.economy-btn {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.economy-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.economy-btn.active {
+  background-color: #87CEEB;
+  color: white;
+  border-color: #87CEEB;
+}
+
+.working-message {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin: 20px 0;
+}
+
+/* World Bank Chart */
+.chart-container {
+  position: relative;
+  margin-top: 15px;
+}
+
 /* World Bank 차트 */
 .chart-container {
   position: relative;
