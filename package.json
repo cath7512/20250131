@@ -12,7 +12,7 @@
     "@babel/polyfill": "^7.12.1",
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.0.0",
-    "core-js": "^3.36.0",
+    "core-js": "^3.41.0",
     "firebase": "^11.2.0",
     "jspreadsheet-ce": "^4.15.0",
     "puppeteer": "^24.2.1",

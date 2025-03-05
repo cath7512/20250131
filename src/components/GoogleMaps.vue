@@ -8,7 +8,8 @@
   import { createWeatherForecastChart, createWeatherHistoryChart } from './WeatherGraph';
   import { createEconomyCharts, updateWorldBankIndicator } from './EconomyGraph_GDP_Population';
   import { createInterestInflationChart } from './EconomyGraph_InterestRate_Inflation';
-  import { setupWHOSelect } from './EconomyGraph_WHO';
+  import { createWHOChart } from './EconomyGraph_WHO';
+  import { createWTOChart } from './EconomyGraph_WTO';
 
   import '../css/GoogleMaps.css';
   import '../css/myPlanner.css';
@@ -21,7 +22,8 @@
         openInfoWindow: null,
         lastActiveTab: 'weather',
         lastWorldBankIndicator: 'CPI',  // 마지막 선택한 World Bank 지표 저장
-        lastEconomySection: 'summary'  // 마지막 선택한 economy 섹션 저장
+        lastEconomySection: 'summary',  // 마지막 선택한 economy 섹션 저장
+        lastWTOIndicator: 'Merchandise' // 마지막 선택한 WTO 지표 저장
         };
     },    
     mounted() {
@@ -79,7 +81,7 @@
           content: infoWindowContent
         });
   
-        marker.addListener('gmp-click', () => {
+        marker.addListener('click', () => {
           if (this.openInfoWindow) {
             this.openInfoWindow.close();
           }
@@ -92,7 +94,8 @@
             createInterestInflationChart(city);
             this.setupTabs();
             this.setupWorldBankSelect(city);
-            setupWHOSelect(city);
+            this.setupWHOSelect(city);
+            this.setupWTOSelect(city);
           });
         });
       },
@@ -130,6 +133,7 @@
                     <button class="economy-btn active" data-section="summary">Summary</button>
                     <button class="economy-btn" data-section="world-bank">World Bank</button>
                     <button class="economy-btn" data-section="who">WHO</button>
+                    <button class="economy-btn" data-section="wto">WTO</button>
                   </div>
                   <div id="summary-section" class="economy-section">
                     <h3 class="chart-title">GDP, Population</h3>
@@ -174,6 +178,18 @@
                       <canvas id="whoChart"></canvas>
                     </div>
                   </div>
+                  <div id="wto-section" class="economy-section" style="display: none;">
+                    <select id="wtoIndicator" class="wb-select">
+                      <option value="Merchandise">Merchandise imports/exports by product group (Million US dollar)</option>
+                      <option value="Country">Import/Export by Country (Million US dollar)</option>
+                    </select>
+                    <div class="chart-container">
+                      <div id="wtoChartLoading" class="chart-loading">
+                        <div class="spinner"></div>
+                      </div>
+                      <canvas id="wtoChart"></canvas>
+                    </div>
+                  </div>
                 </div>
                 <div class="tab-content" id="events">
                   <p>사건 정보가 여기에 표시됩니다.</p>
@@ -187,31 +203,37 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        // 먼저 모든 탭과 컨텐츠의 active 상태 제거
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => {
-          content.style.display = 'none';
-          content.classList.remove('active');
-        });
-
         tabButtons.forEach(button => {
           button.addEventListener('click', () => {
             // 1. 모든 탭 버튼과 콘텐츠 비활성화
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => {
-              content.style.display = 'none';
+              content.style.display = 'none'; // display: none으로 설정
               content.classList.remove('active');
             });
 
             // 2. 클릭한 탭 버튼과 콘텐츠 활성화
             button.classList.add('active');
             const targetContent = document.getElementById(button.dataset.tab);
-            targetContent.style.display = 'block';
+            targetContent.style.display = 'block'; // display: block으로 설정
             targetContent.classList.add('active');
 
             // 3. 선택한 탭 저장
             this.lastActiveTab = button.dataset.tab;
           });
+        });
+
+        // 초기 탭 설정
+        const weatherTab = document.querySelector('.tab-button[data-tab="weather"]');
+        weatherTab.classList.add('active'); // weather 탭 버튼 활성화
+        
+        const weatherContent = document.getElementById('weather');
+        weatherContent.style.display = 'block'; // weather 탭 콘텐츠 표시
+
+        tabContents.forEach(content => {
+          if (content !== weatherContent) {
+            content.style.display = 'none';  // 다른 탭 콘텐츠 숨기기
+          }
         });
 
         // 마지막으로 선택한 탭 활성화
@@ -266,18 +288,50 @@
       setupWorldBankSelect(city) {
         const select = document.getElementById('worldBankIndicator');
         if (!select) return;
-
+  
         // select 값을 마지막 선택한 값으로 설정
         select.value = this.lastWorldBankIndicator;
-
+  
         select.addEventListener('change', async (event) => {
           const indicator = event.target.value;
           this.lastWorldBankIndicator = indicator;  // 선택한 값 저장
           updateWorldBankIndicator(city, indicator);
         });
-
+  
         // 초기 차트 로드 - 마지막 선택한 지표 사용
         updateWorldBankIndicator(city, this.lastWorldBankIndicator);
+      },
+      setupWHOSelect(city) {
+        const select = document.getElementById('whoIndicator');
+        if (!select) return;
+  
+        // select 값을 마지막 선택한 값으로 설정
+        select.value = this.lastWHOIndicator;
+  
+        select.addEventListener('change', async (event) => {
+          const indicator = event.target.value;
+          this.lastWHOIndicator = indicator;  // 선택한 값 저장
+          createWHOChart(city, indicator);
+        });
+  
+        // 초기 차트 로드 - 마지막 선택한 지표 사용
+        createWHOChart(city, this.lastWHOIndicator);
+      },
+      setupWTOSelect(city) {
+        const select = document.getElementById('wtoIndicator');
+        if (!select) return;
+  
+        // select 값을 마지막 선택한 값으로 설정
+        select.value = this.lastWTOIndicator;
+  
+        select.addEventListener('change', async (event) => {
+          const indicator = event.target.value;
+          this.lastWTOIndicator = indicator;  // 선택한 값 저장
+          createWTOChart(city, indicator);
+        });
+  
+        // 초기 차트 로드 - 마지막 선택한 지표 사용
+        createWTOChart(city, this.lastWTOIndicator);
       }
     }
   };

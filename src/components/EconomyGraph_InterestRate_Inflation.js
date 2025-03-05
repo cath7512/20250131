@@ -16,7 +16,7 @@ async function fetchWorldBankData(countryCode, indicatorId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const [metadata, data] = await response.json();
+    const [, data] = await response.json();
     
     if (!data) {
       return [];
