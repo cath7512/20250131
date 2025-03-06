@@ -80,7 +80,8 @@
                 "air_quality": 37.4
             }
         },
-        "country_name": "South Korea"
+        "country_name": "South Korea",
+        "iso3": "KOR"
     },
     {
         "name": "Washington, D.C.",
@@ -163,7 +164,8 @@
                 "air_quality": 10.3
             }
         },
-        "country_name": "United States"
+        "country_name": "United States",
+        "iso3": "USA"
     },
     {
         "name": "Tokyo",
@@ -246,7 +248,8 @@
                 "air_quality": 10.9
             }
         },
-        "country_name": "Japan"
+        "country_name": "Japan",
+        "iso3": "JPN"
     },
     {
         "name": "Beijing",
@@ -329,7 +332,8 @@
                 "air_quality": 301.4
             }
         },
-        "country_name": "China"
+        "country_name": "China",
+        "iso3": "CHN"
     },
     {
         "name": "London",
@@ -412,7 +416,8 @@
                 "air_quality": 7.1
             }
         },
-        "country_name": "United Kingdom"
+        "country_name": "United Kingdom",
+        "iso3": "GBR"
     },
     {
         "name": "Paris",
@@ -495,7 +500,8 @@
                 "air_quality": 58.0
             }
         },
-        "country_name": "France"
+        "country_name": "France",
+        "iso3": "FRA"
     },
     {
         "name": "Berlin",
@@ -578,7 +584,8 @@
                 "air_quality": 15.5
             }
         },
-        "country_name": "Germany"
+        "country_name": "Germany",
+        "iso3": "DEU"
     },
     {
         "name": "Canberra",
@@ -661,7 +668,8 @@
                 "air_quality": 1.7
             }
         },
-        "country_name": "Australia"
+        "country_name": "Australia",
+        "iso3": "AUS"
     },
     {
         "name": "Ottawa",
@@ -744,7 +752,8 @@
                 "air_quality": 4.4
             }
         },
-        "country_name": "Canada"
+        "country_name": "Canada",
+        "iso3": "CAN"
     },
     {
         "name": "New Delhi",
@@ -827,7 +836,8 @@
                 "air_quality": 290.1
             }
         },
-        "country_name": "India"
+        "country_name": "India",
+        "iso3": "IND"
     },
     {
         "name": "Moscow",
@@ -910,7 +920,8 @@
                 "air_quality": 10.1
             }
         },
-        "country_name": "Russia"
+        "country_name": "Russia",
+        "iso3": "RUS"
     },
     {
         "name": "Brazilia",
@@ -993,7 +1004,8 @@
                 "air_quality": 6.3
             }
         },
-        "country_name": "Brazil"
+        "country_name": "Brazil",
+        "iso3": "BRA"
     },
     {
         "name": "Mexico City",
@@ -1076,7 +1088,8 @@
                 "air_quality": 34.9
             }
         },
-        "country_name": "Mexico"
+        "country_name": "Mexico",
+        "iso3": "MEX"
     },
     {
         "name": "Rome",
@@ -1159,7 +1172,8 @@
                 "air_quality": 18.0
             }
         },
-        "country_name": "Italy"
+        "country_name": "Italy",
+        "iso3": "ITA"
     },
     {
         "name": "Madrid",
@@ -1242,7 +1256,8 @@
                 "air_quality": 24.7
             }
         },
-        "country_name": "Spain"
+        "country_name": "Spain",
+        "iso3": "ESP"
     },
     {
         "name": "Bangkok",
@@ -1325,7 +1340,8 @@
                 "air_quality": 89.4
             }
         },
-        "country_name": "Thailand"
+        "country_name": "Thailand",
+        "iso3": "THA"
     },
     {
         "name": "Kuala Lumpur",
@@ -1408,7 +1424,8 @@
                 "air_quality": 94.2
             }
         },
-        "country_name": "Malaysia"
+        "country_name": "Malaysia",
+        "iso3": "MYS"
     },
     {
         "name": "Singapore",
@@ -1491,7 +1508,8 @@
                 "air_quality": 16.2
             }
         },
-        "country_name": "Singapore"
+        "country_name": "Singapore",
+        "iso3": "SGP"
     },
     {
         "name": "Hanoi",
@@ -1574,7 +1592,8 @@
                 "air_quality": 162.8
             }
         },
-        "country_name": "Vietnam"
+        "country_name": "Vietnam",
+        "iso3": "VNM"
     },
     {
         "name": "Cairo",
@@ -1657,7 +1676,8 @@
                 "air_quality": 36.3
             }
         },
-        "country_name": "Egypt"
+        "country_name": "Egypt",
+        "iso3": "EGY"
     },
     {
         "name": "Riyadh",
@@ -1740,7 +1760,8 @@
                 "air_quality": 53.9
             }
         },
-        "country_name": "Saudi Arabia"
+        "country_name": "Saudi Arabia",
+        "iso3": "SAU"
     },
     {
         "name": "Jerusalem",
@@ -1823,7 +1844,8 @@
                 "air_quality": 30.3
             }
         },
-        "country_name": "Israel"
+        "country_name": "Israel",
+        "iso3": "ISR"
     },
     {
         "name": "Abuja",
@@ -1906,7 +1928,8 @@
                 "air_quality": 75.5
             }
         },
-        "country_name": "Nigeria"
+        "country_name": "Nigeria",
+        "iso3": "NGA"
     },
     {
         "name": "Nairobi",
@@ -1989,7 +2012,8 @@
                 "air_quality": 12.0
             }
         },
-        "country_name": "Kenya"
+        "country_name": "Kenya",
+        "iso3": "KEN"
     },
     {
         "name": "Lima",
@@ -2072,7 +2096,8 @@
                 "air_quality": 20.9
             }
         },
-        "country_name": "Peru"
+        "country_name": "Peru",
+        "iso3": "PER"
     },
     {
         "name": "Santiago",
@@ -2155,7 +2180,8 @@
                 "air_quality": 29.3
             }
         },
-        "country_name": "Chile"
+        "country_name": "Chile",
+        "iso3": "CHL"
     },
     {
         "name": "Buenos Aires",
@@ -2238,7 +2264,8 @@
                 "air_quality": 3.0
             }
         },
-        "country_name": "Argentina"
+        "country_name": "Argentina",
+        "iso3": "ARG"
     },
     {
         "name": "Bogota",
@@ -2321,7 +2348,8 @@
                 "air_quality": 15.7
             }
         },
-        "country_name": "Colombia"
+        "country_name": "Colombia",
+        "iso3": "COL"
     },
     {
         "name": "Caracas",
@@ -2404,7 +2432,8 @@
                 "air_quality": 12.8
             }
         },
-        "country_name": "Venezuela"
+        "country_name": "Venezuela",
+        "iso3": "VEN"
     },
     {
         "name": "Helsinki",
@@ -2487,7 +2516,8 @@
                 "air_quality": 9.8
             }
         },
-        "country_name": "Finland"
+        "country_name": "Finland",
+        "iso3": "FIN"
     },
     {
         "name": "Oslo",
@@ -2570,7 +2600,8 @@
                 "air_quality": 6.3
             }
         },
-        "country_name": "Norway"
+        "country_name": "Norway",
+        "iso3": "NOR"
     },
     {
         "name": "Stockholm",
@@ -2653,7 +2684,8 @@
                 "air_quality": 2.2
             }
         },
-        "country_name": "Sweden"
+        "country_name": "Sweden",
+        "iso3": "SWE"
     },
     {
         "name": "Copenhagen",
@@ -2736,7 +2768,8 @@
                 "air_quality": 7.5
             }
         },
-        "country_name": "Denmark"
+        "country_name": "Denmark",
+        "iso3": "DNK"
     },
     {
         "name": "Amsterdam",
@@ -2819,7 +2852,8 @@
                 "air_quality": 7.3
             }
         },
-        "country_name": "Netherlands"
+        "country_name": "Netherlands",
+        "iso3": "NLD"
     },
     {
         "name": "Brussels",
@@ -2902,7 +2936,8 @@
                 "air_quality": 11.3
             }
         },
-        "country_name": "Belgium"
+        "country_name": "Belgium",
+        "iso3": "BEL"
     },
     {
         "name": "Vienna",
@@ -2985,7 +3020,8 @@
                 "air_quality": 19.3
             }
         },
-        "country_name": "Austria"
+        "country_name": "Austria",
+        "iso3": "AUT"
     },
     {
         "name": "Zurich",
@@ -3068,7 +3104,8 @@
                 "air_quality": 29.2
             }
         },
-        "country_name": "Switzerland"
+        "country_name": "Switzerland",
+        "iso3": "CHE"
     },
     {
         "name": "Athens",
@@ -3151,7 +3188,8 @@
                 "air_quality": 10.7
             }
         },
-        "country_name": "Greece"
+        "country_name": "Greece",
+        "iso3": "GRC"
     },
     {
         "name": "Lisbon",
@@ -3234,7 +3272,8 @@
                 "air_quality": 7.9
             }
         },
-        "country_name": "Portugal"
+        "country_name": "Portugal",
+        "iso3": "PRT"
     },
     {
         "name": "Dublin",
@@ -3317,7 +3356,8 @@
                 "air_quality": 3.4
             }
         },
-        "country_name": "Ireland"
+        "country_name": "Ireland",
+        "iso3": "IRL"
     },
     {
         "name": "Warsaw",
@@ -3400,7 +3440,8 @@
                 "air_quality": 32.5
             }
         },
-        "country_name": "Poland"
+        "country_name": "Poland",
+        "iso3": "POL"
     },
     {
         "name": "Budapest",
@@ -3483,7 +3524,8 @@
                 "air_quality": 34.2
             }
         },
-        "country_name": "Hungary"
+        "country_name": "Hungary",
+        "iso3": "HUN"
     },
     {
         "name": "Prague",
@@ -3566,7 +3608,8 @@
                 "air_quality": 31.3
             }
         },
-        "country_name": "Czechia"
+        "country_name": "Czechia",
+        "iso3": "CZE"
     },
     {
         "name": "Bucharest",
@@ -3649,7 +3692,8 @@
                 "air_quality": 31.9
             }
         },
-        "country_name": "Romania"
+        "country_name": "Romania",
+        "iso3": "ROU"
     },
     {
         "name": "Sofia",
@@ -3732,7 +3776,8 @@
                 "air_quality": 26.8
             }
         },
-        "country_name": "Bulgaria"
+        "country_name": "Bulgaria",
+        "iso3": "BGR"
     },
     {
         "name": "Tallinn",
@@ -3815,7 +3860,8 @@
                 "air_quality": 6.4
             }
         },
-        "country_name": "Estonia"
+        "country_name": "Estonia",
+        "iso3": "EST"
     },
     {
         "name": "Vilnius",
@@ -3898,7 +3944,8 @@
                 "air_quality": 7.4
             }
         },
-        "country_name": "Lithuania"
+        "country_name": "Lithuania",
+        "iso3": "LTU"
     },
     {
         "name": "Riga",
@@ -3981,7 +4028,8 @@
                 "air_quality": 7.8
             }
         },
-        "country_name": "Latvia"
+        "country_name": "Latvia",
+        "iso3": "LVA"
     },
     {
         "name": "Tbilisi",
@@ -4064,7 +4112,8 @@
                 "air_quality": 51.1
             }
         },
-        "country_name": "Georgia"
+        "country_name": "Georgia",
+        "iso3": "GEO"
     },
     {
         "name": "Yerevan",
@@ -4147,7 +4196,8 @@
                 "air_quality": 13.2
             }
         },
-        "country_name": "Armenia"
+        "country_name": "Armenia",
+        "iso3": "ARM"
     },
     {
         "name": "Baku",
@@ -4230,7 +4280,8 @@
                 "air_quality": 9.6
             }
         },
-        "country_name": "Azerbaijan"
+        "country_name": "Azerbaijan",
+        "iso3": "AZE"
     },
     {
         "name": "Astana",
@@ -4313,7 +4364,8 @@
                 "air_quality": 5.9
             }
         },
-        "country_name": "Kazakhstan"
+        "country_name": "Kazakhstan",
+        "iso3": "KAZ"
     },
     {
         "name": "Tashkent",
@@ -4396,7 +4448,8 @@
                 "air_quality": 20.8
             }
         },
-        "country_name": "Uzbekistan"
+        "country_name": "Uzbekistan",
+        "iso3": "UZB"
     },
     {
         "name": "Dushanbe",
@@ -4479,7 +4532,8 @@
                 "air_quality": 11.2
             }
         },
-        "country_name": "Tajikistan"
+        "country_name": "Tajikistan",
+        "iso3": "TJK"
     },
     {
         "name": "Ashgabat",
@@ -4562,7 +4616,8 @@
                 "air_quality": 29.0
             }
         },
-        "country_name": "Turkmenistan"
+        "country_name": "Turkmenistan",
+        "iso3": "TKM"
     },
     {
         "name": "Bishkek",
@@ -4645,7 +4700,8 @@
                 "air_quality": 5.8
             }
         },
-        "country_name": "Kyrgyzstan"
+        "country_name": "Kyrgyzstan",
+        "iso3": "KGZ"
     },
     {
         "name": "Ulaanbaatar",
@@ -4728,7 +4784,8 @@
                 "air_quality": 24.9
             }
         },
-        "country_name": "Mongolia"
+        "country_name": "Mongolia",
+        "iso3": "MNG"
     },
     {
         "name": "Nicosia",
@@ -4811,7 +4868,8 @@
                 "air_quality": 11.7
             }
         },
-        "country_name": "Cyprus"
+        "country_name": "Cyprus",
+        "iso3": "CYP"
     },
     {
         "name": "Malta",
@@ -4894,6 +4952,7 @@
                 "air_quality": 8.4
             }
         },
-        "country_name": "Malta"
+        "country_name": "Malta",
+        "iso3": "MLT"
     }
 ]

@@ -13,6 +13,12 @@ export const FIREBASE_CONFIG = {
     measurementId: "G-W9LRC31LYX"
   };
 export const YOUTUBE_API_KEY = 'AIzaSyDsnTLzPhhK5qxGVWenUJpRUOPSwn5uoLg';
+export const COMTRADE_API_KEY = '93fb8f800fc64455aee39c407d412563';
+
+// CORS
+export const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+
+
 
 // PLANNER.JS
 export const PLANNER_COL_TITLE = 0;

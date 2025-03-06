@@ -180,8 +180,8 @@
                   </div>
                   <div id="wto-section" class="economy-section" style="display: none;">
                     <select id="wtoIndicator" class="wb-select">
-                      <option value="Merchandise">Merchandise imports/exports by product group (Million US dollar)</option>
-                      <option value="Country">Import/Export by Country (Million US dollar)</option>
+                      <option value="10exportCountries">Top 10 Exporting Countries</option>
+                      <option value="10importCountries">Top 10 Importing Countries</option>
                     </select>
                     <div class="chart-container">
                       <div id="wtoChartLoading" class="chart-loading">

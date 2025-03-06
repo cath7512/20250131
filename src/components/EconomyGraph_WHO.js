@@ -1,4 +1,5 @@
 import { Chart } from 'chart.js/auto';
+import { CORS_PROXY } from '@/constants/constants';
 
 let whoChart = null;
 
@@ -22,18 +23,19 @@ async function fetchWHOData(countryCode, indicator) {
   try {
     // 최근 10년 데이터 추출
     const end = new Date().getFullYear();
-    const start = end - 10;
-    
+    const start = end - 10;  
     const whoIndicator = WHO_INDICATORS[indicator];
-    const url = `https://data.who.int/data/api/numeric/${whoIndicator}?dimension=COUNTRY:${countryCode}&dimension=YEAR:${start}:${end}`;
 
-    const response = await fetch(url, {
+    const API_URL = `https://data.who.int/data/api/numeric/${whoIndicator}?dimension=COUNTRY:${countryCode}&dimension=YEAR:${start}:${end}`;
+    const response = await fetch(CORS_PROXY + API_URL, {
       method: 'GET',
       headers: {
+        'Origin': window.location.origin,
         'Accept': 'application/json'
       }
     });
-    
+
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
