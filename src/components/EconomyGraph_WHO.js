@@ -1,59 +1,54 @@
 import { Chart } from 'chart.js/auto';
+import { XMLParser } from 'fast-xml-parser'; // Import an XML parser library
 import { CORS_PROXY } from '@/constants/constants';
 
 let whoChart = null;
 
-// WHO 지표 ID 매핑
 const WHO_INDICATORS = {
-  'PVT-D': 'CHE_PC_USD',  // Current health expenditure per capita
-  'ROAD_TRAFFIC_DEATH': 'RTI_EST',  // Estimated road traffic death rate
-  'FOODBORNE_ILLNESS': 'FBI_EST',  // Foodborne disease burden
-  'NEONATAL_MORTALITY': 'NMR'  // Neonatal mortality rate
+  'PVT-D': 'GHED_PVT-D_pc_US_SHA2011',
+  'ROAD_TRAFFIC_DEATH': 'RS_198',
+  'NEONATAL_MORTALITY': 'WHOSIS_000003'
 };
 
-// WHO 지표 단위 매핑
 const WHO_UNITS = {
   'PVT-D': 'US$',
   'ROAD_TRAFFIC_DEATH': 'per 100,000 population',
-  'FOODBORNE_ILLNESS': 'per 100,000 population',
   'NEONATAL_MORTALITY': 'per 1,000 live births'
 };
 
 async function fetchWHOData(countryCode, indicator) {
   try {
-    // 최근 10년 데이터 추출
     const end = new Date().getFullYear();
-    const start = end - 10;  
+    const start = end - 10;
     const whoIndicator = WHO_INDICATORS[indicator];
 
-    const API_URL = `https://data.who.int/data/api/numeric/${whoIndicator}?dimension=COUNTRY:${countryCode}&dimension=YEAR:${start}:${end}`;
-    const response = await fetch(CORS_PROXY + API_URL, {
-      method: 'GET',
-      headers: {
-        'Origin': window.location.origin,
-        'Accept': 'application/json'
-      }
-    });
-
+    const API_URL = `https://apps.who.int/gho/athena/api/GHO/${whoIndicator}?filter=COUNTRY:${countryCode}&filter=YEAR:${start}:${end}`;
+    const response = await fetch(`${CORS_PROXY}?url=${encodeURIComponent(API_URL)}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
-    
-    // 데이터 필터링 및 정리
-    if (!data.data || !data.data.rows) {
+    const xmlText = await response.text();
+    const parser = new XMLParser();
+    const data = parser.parse(xmlText);
+
+    if (data.GHO && data.GHO.Data && data.GHO.Data.Observation) {
+      return data.GHO.Data.Observation
+        .filter(observation => observation.Value && observation.Value.Display !== null)
+        .map((observation) => {
+          const yearDim = observation.Dim.find(dim => dim.Category === 'YEAR');
+          const date = yearDim ? yearDim.Code : 'Unknown Date';
+          return {
+            date,
+            value: parseFloat(observation.Value.Display)
+          };
+        })
+        .sort((a, b) => a.date.localeCompare(b.date));
+    } else {
+      console.error('No valid data found in the expected structure:', JSON.stringify(data, null, 2));
       return [];
     }
-
-    return data.data.rows
-      .filter(row => row.Value !== null)
-      .map(row => ({
-        date: row.YEAR.toString(),
-        value: parseFloat(row.Value)
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
   } catch (error) {
     console.error(`Error fetching WHO data for ${indicator}:`, error);
     return [];
@@ -63,30 +58,27 @@ async function fetchWHOData(countryCode, indicator) {
 async function createWHOChart(city, indicator) {
   const canvas = document.getElementById('whoChart');
   const loadingElement = document.getElementById('whoChartLoading');
-  
+
   if (!canvas || !loadingElement) {
     console.error('WHO chart elements not found');
     return;
   }
 
-  // Show loading spinner
   loadingElement.style.display = 'flex';
   canvas.style.opacity = '0.5';
 
-  // Destroy existing chart if it exists
-  if (whoChart) {
+  if (whoChart instanceof Chart) {
     whoChart.destroy();
   }
 
   try {
-    const data = await fetchWHOData(city.code, indicator);
+    const data = await fetchWHOData(city.iso3, indicator);
 
-    // Hide loading spinner
     loadingElement.style.display = 'none';
     canvas.style.opacity = '1';
 
     if (!data.length) {
-      console.error(`No WHO data found for ${city.code}`);
+      console.error(`No WHO data found for ${city.iso3}`);
       const ctx = canvas.getContext('2d');
       ctx.font = '14px Arial';
       ctx.fillStyle = '#666';
@@ -98,7 +90,6 @@ async function createWHOChart(city, indicator) {
     const years = data.map(item => item.date);
     const values = data.map(item => item.value);
 
-    // Create the chart
     whoChart = new Chart(canvas, {
       type: 'line',
       data: {
@@ -180,28 +171,11 @@ async function createWHOChart(city, indicator) {
     });
   } catch (error) {
     console.error('Error creating WHO chart:', error);
-    // Hide loading spinner in case of error
-    if (loadingElement) {
-      loadingElement.style.display = 'none';
-    }
-    if (canvas) {
-      canvas.style.opacity = '1';
-    }
+    loadingElement.style.display = 'none';
+    canvas.style.opacity = '1';
   }
-}
-
-export function setupWHOSelect(city) {
-  const select = document.getElementById('whoIndicator');
-  if (!select) return;
-
-  select.addEventListener('change', () => {
-    createWHOChart(city, select.value);
-  });
-
-  // 초기 차트 로드
-  createWHOChart(city, select.value);
 }
 
 export {
   createWHOChart
-}; 
+};

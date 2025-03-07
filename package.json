@@ -13,6 +13,7 @@
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.0.0",
     "core-js": "^3.41.0",
+    "fast-xml-parser": "^5.0.8",
     "firebase": "^11.2.0",
     "jspreadsheet-ce": "^4.15.0",
     "puppeteer": "^24.2.1",

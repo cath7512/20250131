@@ -13,11 +13,14 @@ export const FIREBASE_CONFIG = {
     measurementId: "G-W9LRC31LYX"
   };
 export const YOUTUBE_API_KEY = 'AIzaSyDsnTLzPhhK5qxGVWenUJpRUOPSwn5uoLg';
+export const WTO_API_KEY = '6f9162cfa1fc464280a5777a5fc3b493';
 export const COMTRADE_API_KEY = '93fb8f800fc64455aee39c407d412563';
 
-// CORS
-export const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 
+// CORS
+//export const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+export const CORS_PROXY = 'https://saygihab.cath7512.workers.dev';
+//export const CORS_PROXY = "https://corsproxy.io/?";
 
 
 // PLANNER.JS

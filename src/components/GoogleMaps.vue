@@ -23,7 +23,8 @@
         lastActiveTab: 'weather',
         lastWorldBankIndicator: 'CPI',  // 마지막 선택한 World Bank 지표 저장
         lastEconomySection: 'summary',  // 마지막 선택한 economy 섹션 저장
-        lastWTOIndicator: 'Merchandise' // 마지막 선택한 WTO 지표 저장
+        lastWTOIndicator: 'Merchandise', // 마지막 선택한 WTO 지표 저장
+        lastWHOIndicator: 'ROAD_TRAFFIC_DEATH' // 마지막 선택한 WHO 지표 저장
         };
     },    
     mounted() {
@@ -88,14 +89,22 @@
           infoWindow.open(map, marker);
           this.openInfoWindow = infoWindow;
           google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+            // Initialize all charts first
             createWeatherForecastChart(city);
             createWeatherHistoryChart(city);
             createEconomyCharts(city);
             createInterestInflationChart(city);
-            this.setupTabs();
+            
+            // Setup all dropdowns with remembered values
             this.setupWorldBankSelect(city);
             this.setupWHOSelect(city);
             this.setupWTOSelect(city);
+            
+            // Setup tabs with remembered values
+            this.setupTabs();
+            
+            // Apply remembered preferences
+            this.applyRememberedPreferences();
           });
         });
       },
@@ -148,6 +157,7 @@
                   </div>
                   <div id="world-bank-section" class="economy-section" style="display: none;">
                     <select id="worldBankIndicator" class="wb-select">
+                      <option value="">선택하세요</option>
                       <option value="CPI">Consumer Price Index</option>
                       <option value="savings">Gross savings (% of GDP)</option>
                       <option value="internet">Individuals using the Internet (% of population)</option>
@@ -166,9 +176,9 @@
                   </div>
                   <div id="who-section" class="economy-section" style="display: none;">
                     <select id="whoIndicator" class="wb-select">
+                      <option value="">선택하세요</option>
                       <option value="PVT-D">Domestic private health expenditure (PVT-D) per capita in US$</option>
                       <option value="ROAD_TRAFFIC_DEATH">Estimated road traffic death rate (per 100 000 population)</option>
-                      <option value="FOODBORNE_ILLNESS">Foodborne illnesses per 100 000 (median, 95% uncertainty interval)</option>
                       <option value="NEONATAL_MORTALITY">Neonatal mortality rate (0 to 27 days) per 1000 live births) (SDG 3.2.2)</option>
                     </select>
                     <div class="chart-container">
@@ -180,6 +190,7 @@
                   </div>
                   <div id="wto-section" class="economy-section" style="display: none;">
                     <select id="wtoIndicator" class="wb-select">
+                      <option value="">선택하세요</option>
                       <option value="10exportCountries">Top 10 Exporting Countries</option>
                       <option value="10importCountries">Top 10 Importing Countries</option>
                     </select>
@@ -203,6 +214,7 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
+        // Set up tab button click handlers
         tabButtons.forEach(button => {
           button.addEventListener('click', () => {
             // 1. 모든 탭 버튼과 콘텐츠 비활성화
@@ -223,47 +235,9 @@
           });
         });
 
-        // 초기 탭 설정
-        const weatherTab = document.querySelector('.tab-button[data-tab="weather"]');
-        weatherTab.classList.add('active'); // weather 탭 버튼 활성화
-        
-        const weatherContent = document.getElementById('weather');
-        weatherContent.style.display = 'block'; // weather 탭 콘텐츠 표시
-
-        tabContents.forEach(content => {
-          if (content !== weatherContent) {
-            content.style.display = 'none';  // 다른 탭 콘텐츠 숨기기
-          }
-        });
-
-        // 마지막으로 선택한 탭 활성화
-        const activeTab = document.querySelector(`.tab-button[data-tab="${this.lastActiveTab}"]`);
-        if (activeTab) {
-          activeTab.classList.add('active');
-          const activeContent = document.getElementById(this.lastActiveTab);
-          if (activeContent) {
-            activeContent.style.display = 'block';
-            activeContent.classList.add('active');
-          }
-        }
-
         // Economy section buttons handler
         const economyButtons = document.querySelectorAll('.economy-btn');
         const economySections = document.querySelectorAll('.economy-section');
-
-        // Set initial active button based on lastEconomySection
-        const initialActiveButton = document.querySelector(`.economy-btn[data-section="${this.lastEconomySection}"]`);
-        if (initialActiveButton) {
-          economyButtons.forEach(btn => btn.classList.remove('active'));
-          initialActiveButton.classList.add('active');
-          
-          // Show the corresponding section
-          economySections.forEach(section => section.style.display = 'none');
-          const initialSection = document.getElementById(`${this.lastEconomySection}-section`);
-          if (initialSection) {
-            initialSection.style.display = 'block';
-          }
-        }
 
         economyButtons.forEach(button => {
           button.addEventListener('click', () => {
@@ -290,48 +264,104 @@
         if (!select) return;
   
         // select 값을 마지막 선택한 값으로 설정
-        select.value = this.lastWorldBankIndicator;
+        if (this.lastWorldBankIndicator) {
+          select.value = this.lastWorldBankIndicator;
+          updateWorldBankIndicator(city, this.lastWorldBankIndicator);
+        }
   
         select.addEventListener('change', async (event) => {
           const indicator = event.target.value;
+          if (!indicator) return; // Skip if "선택하세요" is selected
           this.lastWorldBankIndicator = indicator;  // 선택한 값 저장
           updateWorldBankIndicator(city, indicator);
         });
   
         // 초기 차트 로드 - 마지막 선택한 지표 사용
-        updateWorldBankIndicator(city, this.lastWorldBankIndicator);
+        if (this.lastWorldBankIndicator) {
+          updateWorldBankIndicator(city, this.lastWorldBankIndicator);
+        }
       },
       setupWHOSelect(city) {
         const select = document.getElementById('whoIndicator');
         if (!select) return;
   
         // select 값을 마지막 선택한 값으로 설정
-        select.value = this.lastWHOIndicator;
+        if (this.lastWHOIndicator) {
+          select.value = this.lastWHOIndicator;
+          createWHOChart(city, this.lastWHOIndicator);
+        }
   
         select.addEventListener('change', async (event) => {
           const indicator = event.target.value;
+          if (!indicator) return; // Skip if "선택하세요" is selected
           this.lastWHOIndicator = indicator;  // 선택한 값 저장
           createWHOChart(city, indicator);
         });
-  
-        // 초기 차트 로드 - 마지막 선택한 지표 사용
-        createWHOChart(city, this.lastWHOIndicator);
       },
       setupWTOSelect(city) {
         const select = document.getElementById('wtoIndicator');
         if (!select) return;
   
         // select 값을 마지막 선택한 값으로 설정
-        select.value = this.lastWTOIndicator;
+        if (this.lastWTOIndicator) {
+          select.value = this.lastWTOIndicator;
+          createWTOChart(city, this.lastWTOIndicator);
+        }
   
         select.addEventListener('change', async (event) => {
           const indicator = event.target.value;
+          if (!indicator) return; // Skip if "선택하세요" is selected
           this.lastWTOIndicator = indicator;  // 선택한 값 저장
           createWTOChart(city, indicator);
         });
   
         // 초기 차트 로드 - 마지막 선택한 지표 사용
-        createWTOChart(city, this.lastWTOIndicator);
+        if (this.lastWTOIndicator) {
+          createWTOChart(city, this.lastWTOIndicator);
+        }
+      },
+      applyRememberedPreferences() {
+        // 1. Activate the remembered tab
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Reset all tabs
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => {
+          content.style.display = 'none';
+          content.classList.remove('active');
+        });
+
+        // Apply the remembered tab
+        const activeTab = document.querySelector(`.tab-button[data-tab="${this.lastActiveTab}"]`);
+        if (activeTab) {
+          activeTab.classList.add('active');
+          const activeContent = document.getElementById(this.lastActiveTab);
+          if (activeContent) {
+            activeContent.style.display = 'block';
+            activeContent.classList.add('active');
+          }
+        }
+
+        // 2. Activate the remembered economy section (if economy tab is active)
+        if (this.lastActiveTab === 'economy') {
+          const economyButtons = document.querySelectorAll('.economy-btn');
+          const economySections = document.querySelectorAll('.economy-section');
+
+          // Reset all economy sections
+          economyButtons.forEach(btn => btn.classList.remove('active'));
+          economySections.forEach(section => section.style.display = 'none');
+
+          // Apply the remembered economy section
+          const activeEconomyBtn = document.querySelector(`.economy-btn[data-section="${this.lastEconomySection}"]`);
+          if (activeEconomyBtn) {
+            activeEconomyBtn.classList.add('active');
+            const activeSection = document.getElementById(`${this.lastEconomySection}-section`);
+            if (activeSection) {
+              activeSection.style.display = 'block';
+            }
+          }
+        }
       }
     }
   };
